@@ -1,33 +1,83 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.5
+import QtQuick.Window 2.2
+import qml2048 1.0
 
-ApplicationWindow {
+Window {
     visible: true
-    width: 640
-    height: 480
-    title: qsTr("Tabs")
+    width: 360
+    height: 560
+    title: qsTr("2048")
 
-    SwipeView {
-        id: swipeView
+    MainForm {
+        id: root
         anchors.fill: parent
-        currentIndex: tabBar.currentIndex
 
-        Page1Form {
+        property int eI
+
+        Grille { id: numProvider }
+
+        function eClear() {
+            for(eI = 0; eI < 16; eI++) {
+                panel.eNums.itemAt(eI).eNum = "";
+                panel.eNums.itemAt(eI).color = "white";
+                panel.eNums.itemAt(eI).eNumColor= "black";
+            }
         }
 
-        Page2Form {
+        function eShow() {
+            eClear();
+            for(eI = 0; eI < 16; eI++) {
+                if(numProvider.show(eI)) {
+                    panel.eNums.itemAt(eI).eNum = numProvider.show(eI);
+                    panel.eNums.itemAt(eI).color = numProvider.color(eI);
+                    panel.eNums.itemAt(eI).eNumColor = numProvider.numColor(eI);
+                }
+            }
+            information.eScore = numProvider.score;
+            information.eStep = numProvider.step;
+            information.eBestScore = numProvider.bestScore;
+            information.eTotalStep = numProvider.totalStep;
+            if(0 < numProvider.step) {
+                botton2.eEnBack = true;
+            }
         }
-    }
 
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
+        Keys.onPressed: {
+            switch(event.key) {
+            case Qt.Key_Up:
+                numProvider.move(Grille.Move_Up);
+                root.eShow();
+                break;
+            case Qt.Key_Down:
+                numProvider.move(Grille.Move_Down);
+                root.eShow();
+                break;
+            case Qt.Key_Left:
+                numProvider.move(Grille.Move_Left);
+                root.eShow();
+                break;
+            case Qt.Key_Right:
+                numProvider.move(Grille.Move_Right);
+                root.eShow();
+                break;
+            default:
+                break;
+            }
+        }
 
-        TabButton {
-            text: qsTr("Page 1")
+
+        start {onClicked: {
+                numProvider.start();
+                root.eShow();
+                root.focus = true;
+                botton2.eEnBack = false;}
         }
-        TabButton {
-            text: qsTr("Page 2")
-        }
-    }
+        back {onClicked: {
+                numProvider.backed();
+                root.eShow();
+                if(!numProvider.step) {
+                    tip1.eEnBack = false;
+              }
+            }}
+}
 }

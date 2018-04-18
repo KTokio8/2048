@@ -25,6 +25,8 @@ public:
     void Init();
     void Set(int x, int y, int value);
     bool FinJeu();
+    void Memoire();
+    void goBack();
 
     void mouveDroite();
     void mouveGauche();
@@ -52,7 +54,8 @@ protected:
     int C;
     int** Cordonnes;
     int compte;
-    Grille* Histoire;
+    int*** Histoire;
+    int step;
 
 private:
     void Alloc(int l=4, int c=4);

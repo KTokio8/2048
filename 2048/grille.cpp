@@ -4,8 +4,10 @@ Grille::Grille(int l, int c)
 {
     Alloc(l,c);
     Init();
+    step = 0;
     AjoutTile();
     AjoutTile();
+    Memoire();
 }
 
 Grille::Grille(const Grille &G)
@@ -27,6 +29,13 @@ void Grille::Free(){
     for (int i=0; i<L; i++)
         delete [] Cordonnes[i];
     delete [] Cordonnes;
+
+    for(int n=0; n<50; n++){
+        for(int m=0; m<L; m++){
+            delete [] Histoire[n][m];}
+        delete [] Histoire[n];
+    }
+    delete [] Histoire;
 }
 
 void Grille::Alloc(int l, int c){
@@ -35,12 +44,23 @@ void Grille::Alloc(int l, int c){
     Cordonnes = new int*[L];
     for(int i=0; i<L; i++)
         Cordonnes[i] = new int[C];
+
+    Histoire = new int**[50];
+    for(int n=0; n<50; n++){
+        Histoire[n] = new int*[L];
+        for(int m=0; m<L; m++){
+            Histoire[n][m] = new int[C];}
+    }
 }
 
 void Grille::Init(){
-    for(int i=0; i<L; i++){
-        for (int j=0; j<C; j++)
-            Cordonnes[i][j]=0;
+    for(int p=0; p<50; p++){
+        for(int i=0; i<L; i++){
+            for (int j=0; j<C; j++){
+                Histoire[p][i][j]=0;
+                Cordonnes[i][j]=0;
+            }
+        }
     }
 }
 
@@ -50,7 +70,6 @@ void Grille::AjoutTile(){
     int numero;
 
     do{
-
         x = (int)(rand() / (RAND_MAX +1.0)*C);
         y = (int)(rand() / (RAND_MAX +1.0)*L);
     }while(Cordonnes[x][y]!=0);
@@ -63,7 +82,21 @@ void Grille::AjoutTile(){
     Cordonnes[x][y]=numero;
 }
 
+void Grille::Memoire(){
+    step++;
+    for(int n=0; n<L; n++){
+        for(int m=0; m<C; m++){
+            Histoire[step][n][m] = Cordonnes[n][m];}
+}
+}
 
+void Grille::goBack(){
+    for(int n=0; n<L; n++){
+        for(int m=0; m<C; m++){
+            Cordonnes[n][m] = Histoire[step-1][n][m];}
+    }
+    step--;
+}
 
 void Grille::mouveGauche(){
     int compte=0;
@@ -106,9 +139,9 @@ void Grille::mouveGauche(){
 
         }else
             AjoutTile();
+            Memoire();
     }
 }
-
 
 void Grille::mouveDroite(){
     int compte=0;
@@ -151,6 +184,7 @@ void Grille::mouveDroite(){
 
         }else
             AjoutTile();
+            Memoire();
     }
 
 
@@ -198,6 +232,7 @@ void Grille::mouveHaut(){
 
         }else
             AjoutTile();
+            Memoire();
     }
 
 }
@@ -243,21 +278,19 @@ void Grille::mouveBas(){
 
         }else
             AjoutTile();
+            Memoire();
     }
 
 }
 
-
-
 bool Grille::FinJeu(){
-    //Afficher la commentaire
-    //( initialiser le jeu ou faire marche arriere)
+
+
     return false;
 }
 
-
 void Grille::Print(){
-    cout << endl;
+    cout<<"Status"<<endl;
     for(int i=0; i<L; i++) {
         cout << endl;
         for(int j=0; j<C; j++)
@@ -266,3 +299,40 @@ void Grille::Print(){
     cout<<endl;
 }
 
+
+
+//Faire une marche
+//void Grille::move(Move_Direction direction)
+//{
+//    added(direction);
+//    moved(direction);
+//    ajoutTile(flag);
+//    if(m_bestScore < m_score) {
+//        m_bestScore = m_score;
+//    }
+//}
+
+//Change les couleurs des carreaux selon ses valeurs
+//QColor Grille::color(const int &index)
+//{
+//    int number = m_number[index];
+//    QColor color;
+//    switch(number) {
+//    case 0: color = QColor(255, 255, 255); break; // white
+//    case 2: color = QColor(245, 222, 179); break; // wheat
+//    case 4: color = QColor(238, 130, 238); break; // violet
+//    case 8: color = QColor(0, 255, 127); break; // springgreen
+//    case 16: color = QColor(255, 192, 203); break; // pink
+//    case 32: color = QColor(255, 165, 0); break; // orange
+//    case 64: color = QColor(173, 255, 47); break; // greenyellow
+//    case 128: color = QColor(255, 99, 71); break; // tomato
+//    case 256: color = QColor(154, 205, 50); break; // yellowgreen
+//    case 512: color = QColor(255, 215, 0); break; // gold
+//    case 1024: color = QColor(0, 255, 255); break; // cyan
+//    case 2048: color = QColor(0, 255, 0); break; // green
+//    case 4096: color = QColor(255, 255, 0); break; // yellow
+//    case 8192: color = QColor(255, 0, 0); break; // red
+//    default: color = QColor(0, 0, 0); break; // black
+//    }
+//    return color;
+//}
