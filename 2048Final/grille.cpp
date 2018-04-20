@@ -1,4 +1,5 @@
 #include "grille.h"
+#include "exception.h"
 
 //Change les couleurs des carreaux selon ses valeurs
 QColor Grille::color(const int &n,const int &m)
@@ -90,7 +91,20 @@ void Grille::commencer(){
     Init();
     AjoutTile();
     AjoutTile();
-    Memoire();
+    try{
+        Memoire();
+    }
+    catch(MyException& e)
+        {
+        std::cout << "MyException caught" << std::endl;
+        std::cout << e.what() << std::endl;
+    }
+    catch(std::exception& e)
+        {
+        //Les autres erreurs
+    }
+    catch (...)
+        {std::cout << "Erreur inconnue" << endl;}
 }
 
 void Grille::Init(){
@@ -130,6 +144,8 @@ void Grille::AjoutTile(){
 void Grille::Memoire(){
     step++;
     estep++;
+    if(step<0)
+        throw MyException();
     if (step>199)
         step -= 200;
     for(int n=0; n<L; n++){

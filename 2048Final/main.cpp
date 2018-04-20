@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include "grille.h"
+#include "exception.h"
 
 int main(int argc, char *argv[])
 {
