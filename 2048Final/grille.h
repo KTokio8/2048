@@ -18,7 +18,7 @@ public:
     Q_INVOKABLE void goBack();
     Q_INVOKABLE int lireChiffre(int a, int b);
     Q_INVOKABLE QColor color(const int &n,const int &m);
-    Q_PROPERTY(QString QMLtermine READ terminer NOTIFY Stepchanged)
+    Q_PROPERTY(QString QMLtermine READ terminer NOTIFY Terme)
     Q_PROPERTY(QString QMLstep READ readstep NOTIFY Stepchanged)
     QString terminer();
     QString readstep();
