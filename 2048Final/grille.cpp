@@ -4,7 +4,7 @@
 //Change les couleurs des carreaux selon ses valeurs
 QColor Grille::color(const int &n,const int &m)
 {
-    int number = Cordonnes[n][m];
+    int number = Coordonnees[n][m];
     QColor color;
     switch(number) {
     case 0: color = QColor(255, 255, 255); break;
@@ -34,15 +34,15 @@ Grille::Grille(QObject *parent) : QObject(parent)
 
 Grille::~Grille()
 {
-    if (Cordonnes != NULL) {
+    if (Coordonnees != NULL) {
         Free();
-        Cordonnes = NULL;
+        Coordonnees = NULL;
     }
 }
 
 //Donner les chiffres des grilles a l'interface
 int Grille::lireChiffre(int a, int b){
-    int chiffre = Cordonnes[a][b];
+    int chiffre = Coordonnees[a][b];
     return chiffre;
 }
 
@@ -59,8 +59,8 @@ QString Grille::readstep()
 
 void Grille::Free(){
     for (int i=0; i<L; i++)
-        delete [] Cordonnes[i];
-    delete [] Cordonnes;
+        delete [] Coordonnees[i];
+    delete [] Coordonnees;
 
     for(int n=0; n<500; n++){
         for(int m=0; m<L; m++){
@@ -73,9 +73,9 @@ void Grille::Free(){
 void Grille::Alloc(int l, int c){
     L = l;
     C = c;
-    Cordonnes = new int*[L];
+    Coordonnees = new int*[L];
     for(int i=0; i<L; i++)
-        Cordonnes[i] = new int[C];
+        Coordonnees[i] = new int[C];
 
     Histoire = new int**[200];
     for(int n=0; n<200; n++){
@@ -112,7 +112,7 @@ void Grille::Init(){
         for(int i=0; i<L; i++){
             for (int j=0; j<C; j++){
                 Histoire[p][i][j]=0;
-                Cordonnes[i][j]=0;
+                Coordonnees[i][j]=0;
             }
         }
     }
@@ -129,14 +129,14 @@ void Grille::AjoutTile(){
     do{
         x = (int)(rand() / (RAND_MAX +1.0)*C);
         y = (int)(rand() / (RAND_MAX +1.0)*L);
-    }while(Cordonnes[x][y]!=0);
+    }while(Coordonnees[x][y]!=0);
 
     int p = (int)(rand() / (RAND_MAX +1.0)*10)+1;
     if (p>8)
         numero=4;
     else
         numero=2;
-    Cordonnes[x][y]=numero;
+    Coordonnees[x][y]=numero;
     if(FinJeu())Terme();
 }
 
@@ -150,7 +150,7 @@ void Grille::Memoire(){
         step -= 200;
     for(int n=0; n<L; n++){
         for(int m=0; m<C; m++){
-            Histoire[step][n][m] = Cordonnes[n][m];
+            Histoire[step][n][m] = Coordonnees[n][m];
         }
     }
     Stepchanged();
@@ -161,7 +161,7 @@ void Grille::goBack(){
     if (step>0){
         for(int n=0; n<L; n++){
             for(int m=0; m<C; m++){
-                Cordonnes[n][m] = Histoire[step-1][n][m];}
+                Coordonnees[n][m] = Histoire[step-1][n][m];}
         }
         step--;
         estep--;
@@ -183,7 +183,7 @@ void Grille::mouve(int d){
     case 0:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Stocks[j][i]=Cordonnes[i][j];
+                Stocks[j][i]=Coordonnees[i][j];
             }
         }
         break;
@@ -191,7 +191,7 @@ void Grille::mouve(int d){
     case 1:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Stocks[L-1-j][C-1-i]=Cordonnes[i][j];
+                Stocks[L-1-j][C-1-i]=Coordonnees[i][j];
             }
         }
         break;
@@ -199,7 +199,7 @@ void Grille::mouve(int d){
     case 2:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Stocks[i][j]=Cordonnes[i][j];
+                Stocks[i][j]=Coordonnees[i][j];
             }
         }
         break;
@@ -207,7 +207,7 @@ void Grille::mouve(int d){
     case 3:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Stocks[i][C-1-j]=Cordonnes[i][j];
+                Stocks[i][C-1-j]=Coordonnees[i][j];
             }
         }
         break;
@@ -260,7 +260,7 @@ void Grille::mouve(int d){
         // transporter la matrice
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Cordonnes[j][i]=Stocks[i][j];
+                Coordonnees[j][i]=Stocks[i][j];
             }
         }
         break;
@@ -268,7 +268,7 @@ void Grille::mouve(int d){
     case 1:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Cordonnes[L-1-j][C-1-i]=Stocks[i][j];
+                Coordonnees[L-1-j][C-1-i]=Stocks[i][j];
             }
         }
         break;
@@ -276,7 +276,7 @@ void Grille::mouve(int d){
     case 2:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Cordonnes[i][j]=Stocks[i][j];
+                Coordonnees[i][j]=Stocks[i][j];
             }
         }
         break;
@@ -284,7 +284,7 @@ void Grille::mouve(int d){
     case 3:
         for(int i=0; i<L; i++){
             for(int j=0; j<C; j++){
-                Cordonnes[i][C-1-j]=Stocks[i][j];
+                Coordonnees[i][C-1-j]=Stocks[i][j];
             }
         }
         break;
@@ -302,13 +302,13 @@ void Grille::mouve(int d){
 bool Grille::FinJeu(){
     for(int n=0; n<L; n++){
         for(int m=0; m<C-1; m++){
-            if ((Cordonnes[n][m] == Cordonnes[n][m+1]) || (Cordonnes[n][m]==0) || (Cordonnes[n][m+1]==0))
+            if ((Coordonnees[n][m] == Coordonnees[n][m+1]) || (Coordonnees[n][m]==0) || (Coordonnees[n][m+1]==0))
                 return false;
         }
     }
     for(int x=0; x<C; x++){
         for(int y=0; y<L-1; y++){
-            if ((Cordonnes[y][x] == Cordonnes[y+1][x]) || (Cordonnes[y][x]==0)|| (Cordonnes[y+1][x]==0))
+            if ((Coordonnees[y][x] == Coordonnees[y+1][x]) || (Coordonnees[y][x]==0)|| (Coordonnees[y+1][x]==0))
                 return false;
         }
     }
@@ -323,18 +323,9 @@ bool Grille::FinJeu(){
 //    Alloc(G.L, G.C);
 //    for(int i=0; i<L; i++)
 //        for(int j=0; j<C; j++)
-//            Cordonnes[i][j] = G.Cordonnes[i][j];
+//            Coordonnees[i][j] = G.Coordonnees[i][j];
 //}
 
-//void Grille::Print(){
-//    cout<<"Status"<<endl;
-//    for(int i=0; i<L; i++) {
-//        cout << endl;
-//        for(int j=0; j<C; j++)
-//            cout << Cordonnes[i][j] << "  ";
-//    }
-//    cout<<endl;
-//}
 
 
 

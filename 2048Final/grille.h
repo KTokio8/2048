@@ -32,7 +32,7 @@ signals:
 protected:
     int L;
     int C;
-    int** Cordonnes;
+    int** Coordonnees;
     int*** Histoire;
     int compte;
     int step;
@@ -48,7 +48,6 @@ private:
     void Init();
     bool FinJeu();
     void Memoire();
-    //void Print();
 };
 
 #endif // GRILLE_H
