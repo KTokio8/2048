@@ -43,19 +43,19 @@ Window {
         Keys.onPressed: {
           switch (event.key) {
             case Qt.Key_Up:
-                vueGrille.mouveHaut();
+                vueGrille.mouve(0);
                 root.showgrille();
               break;
             case Qt.Key_Down:
-                vueGrille.mouveBas();
+                vueGrille.mouve(1);
                 root.showgrille();
               break;
             case Qt.Key_Left:
-                vueGrille.mouveGauche();
+                vueGrille.mouve(2);
                 root.showgrille()
               break;
             case Qt.Key_Right:
-                vueGrille.mouveDroite();
+                vueGrille.mouve(3);
                 root.showgrille()
               break;
             default:

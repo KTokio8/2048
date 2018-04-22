@@ -171,19 +171,65 @@ void Grille::goBack(){
     Stepchanged();
 }
 
-void Grille::mouveGauche(){
+void Grille::mouve(int d){
+    //direction: 0=Haut; 1=Bas; 2=Gauche; 3=Droite
+    int direction=d;
+    //La matrice tempolaire qui stock une matrice transformée
+    int Stocks[L][C];
+
+    //Transformer la matrice: Degager la différence issue de chaque direction
+    switch(direction){
+    //Haut: Transport
+    case 0:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Stocks[j][i]=Cordonnes[i][j];
+            }
+        }
+        break;
+    //Bas:symetrie ponctuelle
+    case 1:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Stocks[L-1-j][C-1-i]=Cordonnes[i][j];
+            }
+        }
+        break;
+    //Gauche: Aucune transforme
+    case 2:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Stocks[i][j]=Cordonnes[i][j];
+            }
+        }
+        break;
+    //Droite: Symetrie lineaire
+    case 3:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Stocks[i][C-1-j]=Cordonnes[i][j];
+            }
+        }
+        break;
+    }
+
+
+   //Detecter s'il y a un changement est possible
     int compte=0;
+
     for(int i=0; i<L; i++){
+         //La partie du calcul:s'il y a des cases fusionnés on les appliaue
         for(int j=0; j<C-1; j++){
-            if(Cordonnes[i][j]!=0){
+            if(Stocks[i][j]!=0){
+                //flag: Detecter une fusion ou une case!=0
                 int flag=0;
                 for(int h=1; h<C-j;h++){
-                    if(Cordonnes[i][j]==Cordonnes[i][j+h]){
-                        Cordonnes[i][j]*=2;
-                        Cordonnes[i][j+h]=0;
+                    if(Stocks[i][j]==Stocks[i][j+h]){
+                        Stocks[i][j]*=2;
+                        Stocks[i][j+h]=0;
                         compte=1;
                         flag=1;
-                    }else if(Cordonnes[i][j+h]!=0){
+                    }else if(Stocks[i][j+h]!=0){
                         flag=1;
                     }
 
@@ -193,12 +239,13 @@ void Grille::mouveGauche(){
             }
         }
 
+        //La partie du déplacement: On deplace des cases si necéssaire
         for(int j=0; j<C; j++){
-            if (Cordonnes[i][j]==0){
+            if (Stocks[i][j]==0){
                 for(int k=1; k<C-j;k++){
-                    if (Cordonnes[i][j+k]!=0){
-                        Cordonnes[i][j]=Cordonnes[i][j+k];
-                        Cordonnes[i][j+k]=0;
+                    if (Stocks[i][j+k]!=0){
+                        Stocks[i][j]=Stocks[i][j+k];
+                        Stocks[i][j+k]=0;
                         compte=1;
                         k=C-j;
                     }
@@ -207,142 +254,49 @@ void Grille::mouveGauche(){
         }
     }
 
+    //Revenir à la matrice avec les cordonnées originales
+    switch(direction){
+    case 0:
+        // transporter la matrice
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Cordonnes[j][i]=Stocks[i][j];
+            }
+        }
+        break;
+
+    case 1:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Cordonnes[L-1-j][C-1-i]=Stocks[i][j];
+            }
+        }
+        break;
+
+    case 2:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Cordonnes[i][j]=Stocks[i][j];
+            }
+        }
+        break;
+
+    case 3:
+        for(int i=0; i<L; i++){
+            for(int j=0; j<C; j++){
+                Cordonnes[i][C-1-j]=Stocks[i][j];
+            }
+        }
+        break;
+    }
+
     if(compte!=0){
         AjoutTile();
         Memoire();
     }
 }
 
-void Grille::mouveDroite(){
-    int compte=0;
-    for(int i=0; i<L; i++){
-        for(int j=C-1; j>0; j--){
-            if(Cordonnes[i][j]!=0){
-                int flag=0;
-                for (int h=1; h<=j;h++){
-                    if (Cordonnes[i][j]==Cordonnes[i][j-h]){
-                        Cordonnes[i][j]*=2;
-                        Cordonnes[i][j-h]=0;
-                        compte=1;
-                        flag=1;
-                    }else if(Cordonnes[i][j-h]!=0){
-                        flag=1;
-                    }
 
-                    if (flag==1)
-                        break;
-                }
-            }
-        }
-
-        for(int j=L-1; j>0; j--){
-            if (Cordonnes[i][j]==0){
-                for(int k=1; k<=j;k++){
-                    if (Cordonnes[i][j-k]!=0){
-                        Cordonnes[i][j]=Cordonnes[i][j-k];
-                        Cordonnes[i][j-k]=0;
-                        compte=1;
-                        k=j;
-                    }
-                }
-            }
-        }
-    }
-
-    if(compte!=0){
-        AjoutTile();
-        Memoire();
-    }
-
-
-
-}
-
-void Grille::mouveHaut(){
-    int compte=0;
-    for(int i=0; i<C; i++){
-        for(int j=0; j<L-1; j++){
-            if(Cordonnes[j][i]!=0){
-                int flag=0;
-                for (int h=1; h<L-j;h++){
-                    if (Cordonnes[j][i]==Cordonnes[j+h][i]){
-                        Cordonnes[j][i]*=2;
-                        Cordonnes[j+h][i]=0;
-                        compte=1;
-                        flag=1;
-                    }else if(Cordonnes[j+h][i]!=0){
-                        flag=1;
-                    }
-
-                    if (flag==1)
-                        break;
-                }
-            }
-        }
-
-        for(int j=0; j<L; j++){
-            if (Cordonnes[j][i]==0){
-                for(int k=1; k<L-j;k++){
-                    if (Cordonnes[j+k][i]!=0){
-                        Cordonnes[j][i]=Cordonnes[j+k][i];
-                        Cordonnes[j+k][i]=0;
-                        compte=1;
-                        k=L-j;
-                    }
-                }
-            }
-        }
-
-    }
-    if(compte!=0){
-        AjoutTile();
-        Memoire();
-    }
-
-}
-
-void Grille::mouveBas(){
-    int compte=0;
-    for(int i=0; i<C; i++){
-        for(int j=L-1; j>0; j--){
-            if(Cordonnes[j][i]!=0){
-                int flag=0;
-                for (int h=1; h<=j;h++){
-                    if (Cordonnes[j][i]==Cordonnes[j-h][i]){
-                        Cordonnes[j][i]*=2;
-                        Cordonnes[j-h][i]=0;
-                        compte=1;
-                        flag=1;
-                    }else if(Cordonnes[j-h][i]!=0){
-                        flag=1;
-                    }
-
-                    if (flag==1)
-                        break;
-                }
-            }
-        }
-
-        for(int j=L-1; j>0; j--){
-            if (Cordonnes[j][i]==0){
-                for(int k=1; k<=j;k++){
-                    if (Cordonnes[j-k][i]!=0){
-                        Cordonnes[j][i]=Cordonnes[j-k][i];
-                        Cordonnes[j-k][i]=0;
-                        compte=1;
-                        k=j;
-                    }
-                }
-            }
-        }
-    }
-
-    if(compte!=0){
-        AjoutTile();
-        Memoire();
-    }
-
-}
 
 //Verifier si le jeu est fini
 bool Grille::FinJeu(){

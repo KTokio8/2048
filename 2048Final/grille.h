@@ -14,6 +14,7 @@ public:
     explicit Grille(QObject *parent = 0);
     ~Grille();
     Q_INVOKABLE void commencer();
+    Q_INVOKABLE void mouve(int d);
     Q_INVOKABLE void mouveDroite();
     Q_INVOKABLE void mouveGauche();
     Q_INVOKABLE void mouveBas();
