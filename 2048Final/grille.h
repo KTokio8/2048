@@ -15,10 +15,6 @@ public:
     ~Grille();
     Q_INVOKABLE void commencer();
     Q_INVOKABLE void mouve(int d);
-    Q_INVOKABLE void mouveDroite();
-    Q_INVOKABLE void mouveGauche();
-    Q_INVOKABLE void mouveBas();
-    Q_INVOKABLE void mouveHaut();
     Q_INVOKABLE void goBack();
     Q_INVOKABLE int lireChiffre(int a, int b);
     Q_INVOKABLE QColor color(const int &n,const int &m);
