@@ -107,6 +107,7 @@ void Grille::commencer(){
         {std::cout << "Erreur inconnue" << endl;}
 }
 
+//Initialiser
 void Grille::Init(){
     for(int p=0; p<200; p++){
         for(int i=0; i<L; i++){
@@ -121,6 +122,7 @@ void Grille::Init(){
     opacite = 0;
 }
 
+//Adjouter une tesselle par hasard
 void Grille::AjoutTile(){
     int x;
     int y;
@@ -171,6 +173,7 @@ void Grille::goBack(){
     Stepchanged();
 }
 
+//Deplacer les tesselles dans le sens choisi
 void Grille::mouve(int d){
     //direction: 0=Haut; 1=Bas; 2=Gauche; 3=Droite
     int direction=d;
@@ -295,8 +298,6 @@ void Grille::mouve(int d){
         Memoire();
     }
 }
-
-
 
 //Verifier si le jeu est fini
 bool Grille::FinJeu(){
